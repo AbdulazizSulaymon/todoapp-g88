@@ -1,59 +1,57 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import "./Todo.css";
 import { Button, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ListGroup, ListGroupItem } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 
+const Todo = (props) => {
+    const dispatch = useDispatch();
 
-export default class Todo extends Component {
-    constructor(props) {
-        super(props);
+    const value = useSelector(state => state.value);
+    const data = useSelector(state => state.tasks);
 
-        this.state = { typing: "", data: props.data }
+    // const {value, data} = useSelector(state => state);
+
+    const typing = (event) => {
+        const action = { type: "SET_VALUE", payload: event.target.value };
+        dispatch(action);
     }
 
-
-    typing = (event) => {
-        console.log(event.target.value);
-
-        this.setState((state) => {
-            return { typing: event.target.value }
-        })
+    const add = () => {
+        const action = { type: "ADD_TASK", payload: value }
+        dispatch(action);
     }
 
-    add = () => {
-        this.setState((state) => {
-            //variant 1
-            // let list = [...state.data];
-            // list.push({ title: state.typing })
-            //return { data: list }
-
-            //variant 2
-            // let list = [...state.data, { title: state.typing }]
-            // return { data: list }
-
-            //variant 3
-            return { data: [...state.data, { title: state.typing }], typing: "" }
-        })
+    const deleteTask = (index) => {
+        const action = { type: "DELETE_TASK", payload: index };
+        dispatch(action);
     }
 
-    render() {
-        return (
-            <div className="bg-white rounded p-3 shadow">
-                <h1>Todo App</h1>
-                <div className="d-flex mb-2">
-                    <Input placeholder="new task" className="me-2" value={this.state.typing} onChange={this.typing} />
-                    <Button color="primary" onClick={this.add}>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                </div>
-                <ListGroup>
-                    {this.state.data.map((value, index) => {
-                        return <ListGroupItem key={index} tag="a" href="#" action>{index + 1}. {value.title}</ListGroupItem>
-                    })}
-                </ListGroup>
+    return (
+        <div className="bg-white rounded p-3 shadow">
+            <h1>Todo App</h1>
+
+            <div className="d-flex mb-2">
+                <Input placeholder="new task" className="me-2" value={value} onChange={typing} />
+                <Button color="primary" onClick={add}>
+                    <FontAwesomeIcon icon={faPlus} />
+                </Button>
             </div>
-        )
-    }
+            <ListGroup>
+                {data?.map((value, index) => {
+                    return <ListGroupItem key={index} tag="a" href="#" action
+                        className="d-flex align-items-center justify-content-between">
+                        <span>{index + 1}. {value.title}</span>
+                        <Button color="danger" onClick={() => deleteTask(index)}>
+                            <FontAwesomeIcon icon={faTrash} />
+                        </Button>
+                    </ListGroupItem>
+                })}
+            </ListGroup>
+        </div>
+    )
 }
+
+export default Todo;
