@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import "./Todo.css";
 import { Button, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { ListGroup } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import Item from './Item';
 
 const Todo = (props) => {
     const dispatch = useDispatch();
@@ -29,6 +29,28 @@ const Todo = (props) => {
         dispatch(action);
     }
 
+    const editTask = (value, index) => {
+        const action = { type: "EDIT_TASK", payload: { value, index } };
+        dispatch(action)
+    }
+
+    const up = (index) => {
+        const action = { type: "UP", payload: index };
+        dispatch(action);
+    }
+
+    const down = (index) => {
+        const action = { type: "DOWN", payload: index };
+        dispatch(action);
+    }
+
+    const toggleCompleted = (index) => {
+        console.log(index, "toggleCompleted");
+
+        const action = { type: "TOGGLE_COMPLETED", payload: index };
+        dispatch(action);
+    }
+
     return (
         <div className="bg-white rounded p-3 shadow">
             <h1>Todo App</h1>
@@ -41,13 +63,14 @@ const Todo = (props) => {
             </div>
             <ListGroup>
                 {data?.map((value, index) => {
-                    return <ListGroupItem key={index} tag="a" href="#" action
-                        className="d-flex align-items-center justify-content-between">
-                        <span>{index + 1}. {value.title}</span>
-                        <Button color="danger" onClick={() => deleteTask(index)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                        </Button>
-                    </ListGroupItem>
+                    return <Item
+                        value={value}
+                        index={index}
+                        deleteTask={deleteTask}
+                        editTask={editTask}
+                        up={up}
+                        down={down}
+                        toggleCompleted={toggleCompleted} />
                 })}
             </ListGroup>
         </div>
