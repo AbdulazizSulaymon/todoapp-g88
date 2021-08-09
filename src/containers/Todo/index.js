@@ -5,6 +5,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ListGroup } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Item from './Item';
+import { SET_VALUE } from './types';
 
 const Todo = (props) => {
     const dispatch = useDispatch();
@@ -15,7 +16,7 @@ const Todo = (props) => {
     // const {value, data} = useSelector(state => state);
 
     const typing = (event) => {
-        const action = { type: "SET_VALUE", payload: event.target.value };
+        const action = { type: SET_VALUE, payload: event.target.value };
         dispatch(action);
     }
 
